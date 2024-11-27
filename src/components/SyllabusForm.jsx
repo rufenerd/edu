@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { fetchGPTResponse } from "../utils/gpt";
 
-const LearningPrompt = () => {
+const SyllabusForm = () => {
     const [topic, setTopic] = useState("");
     const [knowledge, setKnowledge] = useState("");
     const [response, setResponse] = useState("");
@@ -13,7 +13,14 @@ const LearningPrompt = () => {
         setLoading(true);
         setError("");
 
-        const prompt = `Help me learn ${topic}. I already know ${knowledge || "nothing about it"}.`;
+        const prompt = `I want to learn about: ${topic}. I already know: ${knowledge}.
+
+Design a course syllabus for me with units and sections where each section would take about an hour.
+Each section be divided into 2-3 lessons.
+
+Respond with the syllabus in JSON as a list of objects with keys "unitName" and "sections".
+Each section should also be a JSON object with keys "sectionName" and "lessons".
+Each lesson should be a string containing a description of the content of the lesson.`;
 
         try {
             const result = await fetchGPTResponse(prompt);
@@ -62,4 +69,4 @@ const LearningPrompt = () => {
     );
 };
 
-export default LearningPrompt;
+export default SyllabusForm;

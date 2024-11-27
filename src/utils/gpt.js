@@ -28,6 +28,9 @@ export async function fetchGPTResponse(prompt, model = "gpt-4o-mini") {
         const completion = await openai.chat.completions.create({
             messages: [{ role: "user", content: prompt }],
             model: model,
+            response_format: {
+                "type": "json_object"
+            }
         });
         return completion.choices[0].message.content;
     } catch (err) {

@@ -1,7 +1,7 @@
 // src/components/HomePage.jsx
 import React, { useState, useEffect } from 'react';
 import SettingsForm from './SettingsForm';
-import LearningPrompt from "./LearningPrompt";
+import LearningPrompt from "./SyllabusForm";
 import { getAPIKey, getName, getOrgKey, getProjectKey } from '../utils/localStorage';
 
 
