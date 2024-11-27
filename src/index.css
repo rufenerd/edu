@@ -111,4 +111,61 @@ html, body {
     display: flex; /* Show the modal when the "open" class is added */
   }
   
+  .learning-container {
+    background: #fff;
+    color: #333;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  
+  .learning-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .learning-form label {
+    font-weight: bold;
+    margin: 10px 0 5px;
+  }
+  
+  .learning-form input,
+  .learning-form textarea {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  
+  .learning-form button {
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #2575fc, #6a11cb);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .learning-form button:hover {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+  }
+  
+  .response {
+    margin-top: 20px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .response h3 {
+    color: #6a11cb;
+  }
   

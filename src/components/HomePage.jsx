@@ -1,7 +1,9 @@
 // src/components/HomePage.jsx
 import React, { useState, useEffect } from 'react';
-import SettingsForm from './SettingsForm';  // Assuming SettingsForm is a shared component
-import { getAPIKey, getName } from '../utils/localStorage';
+import SettingsForm from './SettingsForm';
+import LearningPrompt from "./LearningPrompt";
+import { getAPIKey, getName, getOrgKey, getProjectKey } from '../utils/localStorage';
+
 
 const HomePage = () => {
     const [isSettingsSet, setIsSettingsSet] = useState(false);
@@ -23,7 +25,6 @@ const HomePage = () => {
         <div className="homepage">
             {isSettingsSet ? (
                 <div>
-                    <h1>Welcome</h1>
                     <div className="gear-icon" onClick={handleGearClick}>
                         &#9881; {/* Unicode character for a simple gear icon */}
                     </div>
@@ -32,6 +33,7 @@ const HomePage = () => {
                             <SettingsForm onSave={() => setIsModalOpen(false)} />
                         </div>
                     </div>
+                    <LearningPrompt apiKey={getAPIKey()} orgKey={getOrgKey()} projectKey={getProjectKey()} />
                 </div>
             ) : (
                 <div>

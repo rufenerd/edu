@@ -1,47 +1,68 @@
-// src/components/SettingsForm.jsx
-import React, { useState, useEffect } from 'react';
-import { saveAPIKey, getAPIKey, saveName, getName } from '../utils/localStorage';
+import React, { useState, useEffect } from "react";
+import {
+    saveAPIKey,
+    getAPIKey,
+    saveName,
+    getName,
+    saveOrgKey,
+    getOrgKey,
+    saveProjectKey,
+    getProjectKey
+} from "../utils/localStorage";
 
 const SettingsForm = (props) => {
-    const [name, setName] = useState('');
-    const [apiKey, setApiKey] = useState('');
+    const [name, setName] = useState("");
+    const [apiKey, setApiKey] = useState("");
+    const [orgKey, setOrgKey] = useState("");
+    const [projectKey, setProjectKey] = useState("");
 
     useEffect(() => {
-        // Load saved values on mount
-        setName(getName() || '');
-        setApiKey(getAPIKey() || '');
+        setName(getName() || "");
+        setApiKey(getAPIKey() || "");
+        setOrgKey(getOrgKey() || "");
+        setProjectKey(getProjectKey() || "");
     }, []);
 
-    const handleSave = (e) => {
-        e.preventDefault();
+    const handleSave = () => {
         saveName(name);
         saveAPIKey(apiKey);
+        saveOrgKey(orgKey);
+        saveProjectKey(projectKey);
         props.onSave && props.onSave()
     };
 
     return (
         <div className="container">
-            <form onSubmit={handleSave}>
-                <label htmlFor="name">What should I call you?</label>
-                <input
-                    id="name"
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter your name"
-                    required
-                />
-                <label htmlFor="apiKey">OpenAI API Key</label>
-                <input
-                    id="apiKey"
-                    type="password"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder="Enter your API key"
-                    required
-                />
-                <button type="submit">Save Settings</button>
-            </form>
+            <h2>Settings</h2>
+            <label>Name:</label>
+            <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Update your name"
+            />
+            <label>OpenAI API Key:</label>
+            <input
+                type="password"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="Update your API key"
+            />
+            <label>OpenAI Organization Key:</label>
+            <input
+                type="password"
+                value={orgKey}
+                onChange={(e) => setOrgKey(e.target.value)}
+                placeholder="Update your Organization key"
+            />
+            <label>OpenAI Project Key:</label>
+            <input
+                type="password"
+                value={projectKey}
+                onChange={(e) => setProjectKey(e.target.value)}
+                placeholder="Update your Project key"
+            />
+            <button onClick={handleSave}>Save Changes</button>
         </div>
     );
 };
