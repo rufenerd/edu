@@ -10,3 +10,6 @@ export const getOrgKey = () => localStorage.getItem("orgKey");
 
 export const saveProjectKey = (key) => localStorage.setItem("projectKey", key);
 export const getProjectKey = () => localStorage.getItem("projectKey");
+
+export const saveSyllabus = (syllabusJson) => localStorage.setItem("syllabus", JSON.stringify(syllabusJson));
+export const getSyllabus = () => JSON.parse(localStorage.getItem("syllabus"));
