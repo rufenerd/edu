@@ -1,45 +1,25 @@
 import React, { useState } from "react";
-import OpenAI from 'openai'
+import { fetchGPTResponse } from "../utils/gpt";
 
-
-const LearningPrompt = ({ apiKey, orgKey, projectKey }) => {
+const LearningPrompt = () => {
     const [topic, setTopic] = useState("");
     const [knowledge, setKnowledge] = useState("");
     const [response, setResponse] = useState("");
     const [loading, setLoading] = useState(false);
-
-    const openai = new OpenAI({
-        apiKey: apiKey,
-        organization: orgKey,
-        project: projectKey,
-        dangerouslyAllowBrowser: true
-    });
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError("");
 
-        if (!topic.trim() || !apiKey) {
-            alert("Please enter a topic and ensure your API key is set.");
-            return;
-        }
-
-        const prompt = `Help me learn ${topic}. I already know ${knowledge || "nothing about it"}. Responde in JSON with a single key named 'lesson'`;
+        const prompt = `Help me learn ${topic}. I already know ${knowledge || "nothing about it"}.`;
 
         try {
-            setLoading(true);
-            setResponse("");
-
-            const completion = await openai.chat.completions.create({
-                messages: [{ role: "user", content: prompt }],
-                model: "gpt-4o-mini",
-                response_format: {
-                    "type": "json_object"
-                }
-            });
-            const result = completion.choices[0].message.content
+            const result = await fetchGPTResponse(prompt);
             setResponse(result);
         } catch (err) {
-            setResponse(`Error: ${err.message}`);
+            setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -68,9 +48,10 @@ const LearningPrompt = ({ apiKey, orgKey, projectKey }) => {
                     />
                 </label>
                 <button type="submit" disabled={loading}>
-                    {loading ? "Asking GPT..." : "Submit"}
+                    {loading ? "Loading..." : "Submit"}
                 </button>
             </form>
+            {error && <p className="error">Error: {error}</p>}
             {response && (
                 <div className="response">
                     <h3>GPT Response:</h3>
