@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import SettingsForm from './SettingsForm';
 import SyllabusForm from "./SyllabusForm";
+import Lesson from './Lesson';
 import Syllabus from './Syllabus';
-import { getAPIKey, getName, getOrgKey, getProjectKey, getSyllabus, saveSyllabus } from '../utils/localStorage';
+import { getActiveLesson, getAPIKey, getName, getOrgKey, getProjectKey, getSyllabus, saveSyllabus } from '../utils/localStorage';
 
 const Layout = () => {
     const [activeView, setActiveView] = useState('settings');
     const [syllabus, setSyllabus] = useState(getSyllabus());
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [activeLesson, setActiveLesson] = useState(getActiveLesson());
 
     useEffect(() => {
         const name = getName();
         const apiKey = getAPIKey();
         if (name && apiKey) {
-            setActiveView(syllabus ? 'syllabus' : 'syllabusForm');
+            if (activeLesson) {
+                setActiveView("lesson")
+            } else {
+                setActiveView(syllabus ? 'syllabus' : 'syllabusForm');
+            }
         }
-    }, [syllabus]);
+    }, [syllabus, activeLesson]);
 
     const handleGearClick = () => {
         setIsModalOpen(true);
@@ -31,7 +37,12 @@ const Layout = () => {
         setActiveView('syllabus');
     };
 
+    const onLessonClose = () => {
+        setActiveLesson()
+    }
+
     const renderView = () => {
+        console.log("Active view:" + activeView)
         switch (activeView) {
             case 'settings':
                 return (
@@ -50,7 +61,9 @@ const Layout = () => {
                     />
                 );
             case 'syllabus':
-                return <Syllabus syllabus={syllabus} />;
+                return <Syllabus syllabus={syllabus} onLessonSelect={setActiveLesson} />;
+            case 'lesson':
+                return <Lesson syllabus={syllabus} lessonDescription={getActiveLesson()} onClose={onLessonClose} />
             default:
                 return <h1>Page not found</h1>; // Fallback for unknown views
         }

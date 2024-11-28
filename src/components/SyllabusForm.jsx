@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { fetchGPTResponse } from "../utils/gpt";
+import { savePriorKnowledge } from "../utils/localStorage";
 
 const SyllabusForm = ({ onSyllabusCreate }) => {
     const [topic, setTopic] = useState("");
@@ -11,6 +12,7 @@ const SyllabusForm = ({ onSyllabusCreate }) => {
         e.preventDefault();
         setLoading(true);
         setError("");
+        savePriorKnowledge(knowledge)
 
         const prompt = `I want to learn about: ${topic}. I already know: ${knowledge}.
 
@@ -22,7 +24,8 @@ Respond with a JSON object with two keys, "units" and "courseTitle".
 Each section should also be a JSON object with keys "sectionName" and "lessons".
 Each lesson should be a string containing a description of the content of the lesson.
 
-Do not include unit or sections numbers, just name them based on the content that would be covered.`;
+Do not include unit or sections numbers, just name them based on the content that would be covered.
+Do not include any quizzes, tests, or projects.`;
 
         try {
             const result = await fetchGPTResponse(prompt);

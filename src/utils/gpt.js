@@ -8,7 +8,7 @@ import { getAPIKey, getOrgKey, getProjectKey } from "./localStorage";
  * @param {string} model - The model to use (default: "gpt-4o-mini").
  * @returns {Promise<string>} - The GPT response.
  */
-export async function fetchGPTResponse(prompt, model = "gpt-4o-mini") {
+export async function fetchGPTResponse(prompt, jsonMode = true, model = "gpt-4o-mini") {
     const apiKey = getAPIKey();
     const orgKey = getOrgKey();
     const projectKey = getProjectKey();
@@ -29,7 +29,7 @@ export async function fetchGPTResponse(prompt, model = "gpt-4o-mini") {
             messages: [{ role: "user", content: prompt }],
             model: model,
             response_format: {
-                "type": "json_object"
+                "type": jsonMode ? "json_object" : "text"
             }
         });
         return completion.choices[0].message.content;
