@@ -6,7 +6,7 @@ html, body {
   
   body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    background: linear-gradient(135deg, #052a99, #2575fc);
     color: #fff;
     margin: 0;
     padding: 0;
@@ -30,7 +30,7 @@ html, body {
     text-align: center;
     font-size: 1.8rem;
     margin-bottom: 20px;
-    color: #6a11cb;
+    color: #052a99;
   }
   
   label {
@@ -55,7 +55,7 @@ html, body {
     font-size: 1rem;
     font-weight: bold;
     color: #fff;
-    background: linear-gradient(135deg, #2575fc, #6a11cb);
+    background: linear-gradient(135deg, #2575fc, #052a99);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -63,7 +63,7 @@ html, body {
   }
   
   button:hover {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    background: linear-gradient(135deg, #052a99, #2575fc);
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   }
@@ -146,7 +146,7 @@ html, body {
     font-size: 1rem;
     font-weight: bold;
     color: #fff;
-    background: linear-gradient(135deg, #2575fc, #6a11cb);
+    background: linear-gradient(135deg, #2575fc, #052a99);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -154,7 +154,7 @@ html, body {
   }
   
   .learning-form button:hover {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    background: linear-gradient(135deg, #052a99, #2575fc);
   }
   
   .response {
@@ -166,7 +166,7 @@ html, body {
   }
   
   .response h3 {
-    color: #6a11cb;
+    color: #052a99;
   }
 
   .syllabus-container {

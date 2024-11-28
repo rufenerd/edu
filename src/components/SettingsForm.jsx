@@ -62,7 +62,7 @@ const SettingsForm = (props) => {
                 onChange={(e) => setProjectKey(e.target.value)}
                 placeholder="Update your Project key"
             />
-            <button onClick={handleSave}>Save Changes</button>
+            <button onClick={handleSave}>Ok</button>
         </div>
     );
 };
