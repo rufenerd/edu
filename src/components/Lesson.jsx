@@ -52,12 +52,10 @@ const Lesson = ({ syllabus, lessonDescription, onClose }) => {
 
     return (
         <div className="lesson-container">
-            {/* Return to syllabus button */}
             <button onClick={onReturnToSyllabus} className="return-button">
                 Return to Syllabus
             </button>
 
-            {/* Lesson content */}
             {loading && <p>Creating lesson...</p>}
             {error && <p className="error">{error}</p>}
             {!loading && !error && (

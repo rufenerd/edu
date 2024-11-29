@@ -9,7 +9,7 @@ const Syllabus = ({ syllabus, onLessonSelect }) => {
     }
     return (
         <div className="syllabus-container">
-            <h1>{syllabus.courseTitle} Syllabus</h1>
+            <h1>{syllabus.courseTitle}</h1>
             {syllabus.units.map((unit, unitIndex) => (
                 <div key={unit.unitName} className="unit">
                     <h2>

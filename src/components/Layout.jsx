@@ -70,7 +70,7 @@ const Layout = () => {
     };
 
     return (
-        <div className="homepage">
+        <div className="layout">
             {activeView !== 'settings' && (
                 <div className="gear-icon" onClick={handleGearClick}>
                     &#9881; {/* Unicode character for a simple gear icon */}
