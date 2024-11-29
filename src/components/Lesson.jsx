@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { fetchGPTResponse } from '../utils/gpt'; // Ensure this method is implemented in your utils
 import { getPriorKnowledge, saveActiveLesson } from '../utils/localStorage';
+import Spinner from '../components/Spinner'
 import MarkdownRender from '../components/MarkdownRender';
 
 const Lesson = ({ syllabus, lessonDescription, onClose }) => {
@@ -56,16 +57,16 @@ const Lesson = ({ syllabus, lessonDescription, onClose }) => {
                 Return to Syllabus
             </button>
 
-            {loading && <p>Creating lesson...</p>}
             {error && <p className="error">{error}</p>}
-            {!loading && !error && (
+            {!error && (
                 <div className="lesson-content">
-                    {lessonContent && <MarkdownRender source={lessonContent} />}
+                    {loading && <div className="lesson-loading"><Spinner />Creating lesson...</div>}
+                    {!loading && lessonContent && <MarkdownRender source={lessonContent} />}
                 </div>
             )}
-            <button onClick={onReturnToSyllabus} className="return-button">
+            {!loading && <button onClick={onReturnToSyllabus} className="return-button">
                 Return to Syllabus
-            </button>
+            </button>}
         </div>
     );
 };

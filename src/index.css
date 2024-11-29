@@ -7,7 +7,7 @@
   
   body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #052a99, #2575fc);
+    background: #555;
     color: #fff;
     margin: 0;
     padding: 0;
@@ -54,13 +54,6 @@
   .settings-container button {
     margin: 0;
     width: 150px;
-  }
-  
-  h2 {
-    text-align: center;
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    color: #052a99;
   }
   
   label {
@@ -223,10 +216,16 @@ h1 {
 
 h2 {
     color: #3f51b5;
-    font-size: 1.9rem;
-    margin-bottom: 10px;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
     border-bottom: 2px solid #ddd;
     padding: 15px;
+    text-align: center;
+}
+
+.learning-form h2 {
+  padding-top: 0;
+  margin-top: 5px;
 }
 
 h3 {
@@ -252,13 +251,9 @@ ul {
   cursor: pointer;
 }
 
-li:hover {
-    background-color: #f0f0f0;
-}
 
 .lesson-container {
   color: #333;
-  padding: 20px;
   width: 90%;
   margin: 0 auto;
   height: 100vh;
@@ -268,6 +263,10 @@ li:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.lesson-selector:hover {
+  background-color: #f0f0f0;
 }
 
 .lesson-content {
@@ -283,4 +282,34 @@ li:hover {
 
 .return-button {
   width: 200px;
+}
+
+.lesson-loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-height: 200px;
+  font-size: 1.4rem;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full screen height */
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-top: 5px solid #052a99;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
