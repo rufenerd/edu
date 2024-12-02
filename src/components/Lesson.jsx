@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { fetchGPTResponse } from '../utils/gpt'; // Ensure this method is implemented in your utils
 import { getPriorKnowledge, saveActiveLesson, saveLesson, getLesson } from '../utils/localStorage';
 import Spinner from '../components/Spinner'
@@ -8,6 +8,7 @@ const Lesson = ({ syllabus, lessonDescription, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [lessonContent, setLessonContent] = useState('');
     const [error, setError] = useState('');
+    const fetchedDescriptions = useRef(new Set());
 
     const fetchLesson = async (lessonDescription) => {
 
@@ -51,6 +52,9 @@ const Lesson = ({ syllabus, lessonDescription, onClose }) => {
 
     // Fetch the lesson when the component mounts
     React.useEffect(() => {
+        if (!lessonDescription || fetchedDescriptions.current.has(lessonDescription)) return;
+        fetchedDescriptions.current.add(lessonDescription);
+
         fetchLesson(lessonDescription);
     }, [lessonDescription]);
 
