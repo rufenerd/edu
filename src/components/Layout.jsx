@@ -42,11 +42,13 @@ const Layout = () => {
     }
 
     const resetSyllabus = () => {
-        setSyllabus(null)
-        clearSyllabus()
-        setActiveView("syllabusForm")
+        const isConfirmed = window.confirm("Are you sure you want to exit this course? You can always generate it again but it will be different.");
+        if (isConfirmed) {
+            setSyllabus(null);
+            clearSyllabus();
+            setActiveView("syllabusForm");
+        }
     }
-
     const renderView = () => {
         console.log("Active view:" + activeView)
         switch (activeView) {

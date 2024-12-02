@@ -110,26 +110,27 @@
   }
   
   /* Gear icon positioned at top-right of the whole page */
-  .gear-icon {
+  .gear-icon, .back-button {
+    color: #fff;
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 2rem;
     cursor: pointer;
     user-select: none;  /* Prevents text selection on click */
     z-index: 1001;  /* Ensures it's above other content */
+    line-height: 1;
   }
 
+  .gear-icon {
+    top: 10px;
+    right: 15px;
+    font-size: 32px;
+    }
+
   .back-button {
-    position: absolute;
     top: 50px;
-    right: 11px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    user-select: none;  /* Prevents text selection on click */
-    z-index: 1001;  /* Ensures it's above other content */
+    right: 16px;
+    font-size: 20px;
   }
-  
+
   .modal {
     display: none; /* Initially hidden */
     position: fixed;
@@ -325,4 +326,22 @@ ul {
   to {
     transform: rotate(360deg);
   }
+}
+
+.img-container {
+  display: flex;
+  justify-content: center;
+}
+
+.em-container {
+  text-align: center;
+}
+
+img {
+  padding: 0;
+  max-height: 400px;
+  max-width: 400px;
+  width: auto;
+  height: auto;
+  display: block; /* Prevents space below the image */
 }

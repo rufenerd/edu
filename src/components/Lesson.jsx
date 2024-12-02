@@ -3,6 +3,7 @@ import { fetchGPTResponse } from '../utils/gpt'; // Ensure this method is implem
 import { getPriorKnowledge, saveActiveLesson, saveLesson, getLesson } from '../utils/localStorage';
 import Spinner from '../components/Spinner'
 import MarkdownRender from '../components/MarkdownRender';
+import { fetchWikipediaImages } from '../utils/images'
 
 const Lesson = ({ syllabus, lessonDescription, onClose }) => {
     const [loading, setLoading] = useState(false);
@@ -10,8 +11,27 @@ const Lesson = ({ syllabus, lessonDescription, onClose }) => {
     const [error, setError] = useState('');
     const fetchedDescriptions = useRef(new Set());
 
-    const fetchLesson = async (lessonDescription) => {
+    const generateImagesPromptClause = (images) => {
+        if (images == null || images.length === 0) {
+            return ''
+        }
+        const imageEntries = Object.entries(images)
+            .map(([key, { url, caption }]) => `- ${caption}: ${url}`)
+            .join("\n");
 
+        return `
+      When relevant, include the following images in your response. Provide the image's URL and its caption for context:
+      ${imageEntries}
+      Only use the images when they add value to your answer, like what would appear in a textbook for this topic. Avoid including irrelevant images.
+      Only use the provided captions.
+
+      When including images, use this example format:
+![Cute character](https://example.com/cute-character.jpg)  
+_This is a cute character from the game._
+        `.trim();
+    };
+
+    const fetchLesson = async (lessonDescription) => {
         const savedContent = getLesson(lessonDescription)
         if (savedContent != null) {
             setLessonContent(savedContent);
@@ -23,23 +43,37 @@ const Lesson = ({ syllabus, lessonDescription, onClose }) => {
             return;
         }
 
-        const prompt = `You are an expert educator known for writing clear and illuminating material.
-        
-        Consider this course syllabus:
-        ${buildSyllabusString(syllabus)}
-        
-        Now, assume I understand everything that comes before "${lessonDescription}" in the syllabus above
-        and also that I have this background: ${getPriorKnowledge()}.
-        
-        Teach me "${lessonDescription}".
-        Phrase your response as if it were straight out of a high-quality textbook.
-        - Only use Markdown, do not use Tex
-        - Do not include any questions or practice problems
-`;
-
         try {
             setLoading(true);
             setError('');
+
+            const imagePromptResponse = await fetchGPTResponse(`Consider this course syllabus:
+            ${buildSyllabusString(syllabus)}
+            
+            What would the top three wikipedia articles to search for to gain understanding on this topic: ${lessonDescription}?
+            Respond with a JSON array of strings under a single key called \`articles\`.`, true);
+            const imageSearchQueries = JSON.parse(imagePromptResponse).articles
+            let images = []
+            for (const imageQuery of Object.values(imageSearchQueries)) {
+                images = images.concat(await fetchWikipediaImages(imageQuery))
+            }
+
+            const prompt = `You are an expert educator known for writing clear and illuminating material.
+            
+            Consider this course syllabus:
+            ${buildSyllabusString(syllabus)}
+            
+            Now, assume I understand everything that comes before "${lessonDescription}" in the syllabus above
+            and also that I have this background: ${getPriorKnowledge()}.
+            
+            Teach me "${lessonDescription}".
+            Phrase your response as if it were straight out of a high-quality textbook.
+            - Only use Markdown, do not use Tex or html
+            - Do not include any questions or practice problems
+    
+            ${generateImagesPromptClause(images)}
+    `;
+
             const response = await fetchGPTResponse(`Teach me: ${prompt}`, false);
             setLessonContent(response);
             saveLesson(lessonDescription, response)
@@ -65,10 +99,9 @@ const Lesson = ({ syllabus, lessonDescription, onClose }) => {
 
     return (
         <div className="lesson-container">
-            <button onClick={onReturnToSyllabus} className="return-button">
-                Return to Syllabus
-            </button>
-
+            <div className="back-button" onClick={onReturnToSyllabus}>
+                ⇦
+            </div>
             {error && <p className="error">{error}</p>}
             {!error && (
                 <div className="lesson-content">
@@ -76,9 +109,6 @@ const Lesson = ({ syllabus, lessonDescription, onClose }) => {
                     {!loading && lessonContent && <MarkdownRender source={lessonContent} />}
                 </div>
             )}
-            {!loading && <button onClick={onReturnToSyllabus} className="return-button">
-                Return to Syllabus
-            </button>}
         </div>
     );
 };
