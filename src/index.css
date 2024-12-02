@@ -328,15 +328,6 @@ ul {
   }
 }
 
-.img-container {
-  display: flex;
-  justify-content: center;
-}
-
-.em-container {
-  text-align: center;
-}
-
 img {
   padding: 0;
   max-height: 400px;

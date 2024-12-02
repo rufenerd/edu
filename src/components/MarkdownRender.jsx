@@ -10,17 +10,6 @@ function MarkdownRender({ source }) {
                 children={source}
                 remarkPlugins={[remarkMath]} // Enable math syntax parsing
                 components={{
-                    img: (props) => (
-                        <div className="img-container">
-                            <img {...props} />
-                        </div>
-                    ),
-                    br: "div",
-                    em: (props) => (
-                        <div className="em-container">
-                            <em {...props} />
-                        </div>
-                    ),
                     math: ({ value }) => <MathJax inline>{value}</MathJax>,
                     inlineMath: ({ value }) => <MathJax>{value}</MathJax>,
                 }}

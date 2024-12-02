@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { fetchGPTResponse } from '../utils/gpt'; // Ensure this method is implemented in your utils
-import { getPriorKnowledge, saveActiveLesson, saveLesson, getLesson } from '../utils/localStorage';
+import { getPriorKnowledge, saveActiveLesson, saveLesson, getLesson, addUsedImageUrls, getUsedImageUrls } from '../utils/localStorage';
 import Spinner from '../components/Spinner'
 import MarkdownRender from '../components/MarkdownRender';
 import { fetchWikipediaImages } from '../utils/images'
@@ -31,6 +31,11 @@ _This is a cute character from the game._
         `.trim();
     };
 
+    const extractUrls = (text) => {
+        const urlRegex = /https?:\/\/[^\s/$.?#].[^\s)"]*/g;
+        return text.match(urlRegex) || [];
+    }
+
     const fetchLesson = async (lessonDescription) => {
         const savedContent = getLesson(lessonDescription)
         if (savedContent != null) {
@@ -57,6 +62,8 @@ _This is a cute character from the game._
             for (const imageQuery of Object.values(imageSearchQueries)) {
                 images = images.concat(await fetchWikipediaImages(imageQuery))
             }
+            const usedImageUrls = getUsedImageUrls()
+            const unusedImages = images.filter(image => !usedImageUrls.includes(image.url));
 
             const prompt = `You are an expert educator known for writing clear and illuminating material.
             
@@ -71,12 +78,16 @@ _This is a cute character from the game._
             - Only use Markdown, do not use Tex or html
             - Do not include any questions or practice problems
     
-            ${generateImagesPromptClause(images)}
+            ${generateImagesPromptClause(unusedImages)}
     `;
 
             const response = await fetchGPTResponse(`Teach me: ${prompt}`, false);
             setLessonContent(response);
             saveLesson(lessonDescription, response)
+
+            const usedUrls = extractUrls(response)
+            addUsedImageUrls(usedUrls);
+            debugger
         } catch (err) {
             setError(`Failed to fetch lesson: ${err.message}`);
         } finally {

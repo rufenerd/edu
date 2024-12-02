@@ -42,5 +42,21 @@ export const clearSyllabus = () => {
     localStorage.removeItem("syllabus")
     localStorage.removeItem("activeLesson")
     localStorage.removeItem("priorKnowledge")
+    localStorage.removeItem(USED_IMAGE_URLS_KEY)
     // localStorage.removeItem("lessonMap")
+}
+
+const USED_IMAGE_URLS_KEY = "usedImageUrls";
+
+export const getUsedImageUrls = () => {
+    const imageUrls = localStorage.getItem(USED_IMAGE_URLS_KEY)
+    return imageUrls ? JSON.parse(imageUrls) : []
+}
+
+export const addUsedImageUrls = (urls) => {
+    const imageUrls = getUsedImageUrls();
+    for (const url of urls) {
+        imageUrls.push(url)
+    }
+    localStorage.setItem(USED_IMAGE_URLS_KEY, JSON.stringify(imageUrls));
 }
