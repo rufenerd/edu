@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { fetchGPTResponse } from '../utils/gpt'; // Ensure this method is implemented in your utils
-import { getPriorKnowledge, saveActiveLesson } from '../utils/localStorage';
+import { getPriorKnowledge, saveActiveLesson, saveLesson, getLesson } from '../utils/localStorage';
 import Spinner from '../components/Spinner'
 import MarkdownRender from '../components/MarkdownRender';
 
@@ -10,6 +10,13 @@ const Lesson = ({ syllabus, lessonDescription, onClose }) => {
     const [error, setError] = useState('');
 
     const fetchLesson = async (lessonDescription) => {
+
+        const savedContent = getLesson(lessonDescription)
+        if (savedContent != null) {
+            setLessonContent(savedContent);
+            return;
+        }
+
         if (!lessonDescription) {
             setError('No lesson provided.');
             return;
@@ -34,6 +41,7 @@ const Lesson = ({ syllabus, lessonDescription, onClose }) => {
             setError('');
             const response = await fetchGPTResponse(`Teach me: ${prompt}`, false);
             setLessonContent(response);
+            saveLesson(lessonDescription, response)
         } catch (err) {
             setError(`Failed to fetch lesson: ${err.message}`);
         } finally {

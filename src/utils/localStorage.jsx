@@ -19,3 +19,21 @@ export const getPriorKnowledge = () => localStorage.getItem("priorKnowledge");
 
 export const saveActiveLesson = (activeLesson) => activeLesson ? localStorage.setItem("activeLesson", activeLesson) : localStorage.removeItem("activeLesson");
 export const getActiveLesson = () => localStorage.getItem("activeLesson");
+
+const LESSON_MAP_KEY = "lessonMap";
+
+const getLessonMap = () => {
+    const mapJson = localStorage.getItem(LESSON_MAP_KEY);
+    return mapJson ? JSON.parse(mapJson) : {};
+};
+
+export const saveLesson = (lessonDescription, lessonContent) => {
+    const lessonMap = getLessonMap();
+    lessonMap[lessonDescription] = lessonContent;
+    localStorage.setItem(LESSON_MAP_KEY, JSON.stringify(lessonMap));
+};
+
+export const getLesson = (lessonDescription) => {
+    const lessonMap = getLessonMap();
+    return lessonMap[lessonDescription] || null;
+};
