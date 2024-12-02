@@ -37,3 +37,10 @@ export const getLesson = (lessonDescription) => {
     const lessonMap = getLessonMap();
     return lessonMap[lessonDescription] || null;
 };
+
+export const clearSyllabus = () => {
+    localStorage.removeItem("syllabus")
+    localStorage.removeItem("activeLesson")
+    localStorage.removeItem("priorKnowledge")
+    // localStorage.removeItem("lessonMap")
+}

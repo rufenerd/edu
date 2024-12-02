@@ -1,7 +1,7 @@
 import React from 'react';
 import { saveActiveLesson } from '../utils/localStorage';
 
-const Syllabus = ({ syllabus, onLessonSelect }) => {
+const Syllabus = ({ syllabus, onLessonSelect, onBackClick }) => {
 
     const onLessonClick = (lesson) => {
         saveActiveLesson(lesson)
@@ -9,6 +9,9 @@ const Syllabus = ({ syllabus, onLessonSelect }) => {
     }
     return (
         <div className="syllabus-container">
+            <div className="back-button" onClick={onBackClick}>
+                ⇦
+            </div>
             <h1>{syllabus.courseTitle}</h1>
             {syllabus.units.map((unit, unitIndex) => (
                 <div key={unit.unitName} className="unit">

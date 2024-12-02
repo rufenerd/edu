@@ -42,12 +42,12 @@ Do not include any quizzes, tests, or projects.`;
             <form className="learning-form" onSubmit={handleSubmit}>
                 <h2>What do you want to learn?</h2>
                 <label>
-                    Topic:
+                    Topic
                     <input
                         type="text"
                         value={topic}
                         onChange={(e) => setTopic(e.target.value)}
-                        placeholder="e.g., Quantum Physics"
+                        placeholder="Quantum Physics"
                         required
                     />
                 </label>
@@ -56,7 +56,7 @@ Do not include any quizzes, tests, or projects.`;
                     <textarea
                         value={knowledge}
                         onChange={(e) => setKnowledge(e.target.value)}
-                        placeholder="e.g., Basic knowledge of Newtonian physics"
+                        placeholder="Basic knowledge of Newtonian physics"
                     />
                 </label>
                 <button type="submit" disabled={loading}>

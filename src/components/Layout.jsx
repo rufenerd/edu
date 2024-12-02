@@ -3,7 +3,7 @@ import SettingsForm from './SettingsForm';
 import SyllabusForm from "./SyllabusForm";
 import Lesson from './Lesson';
 import Syllabus from './Syllabus';
-import { getActiveLesson, getAPIKey, getName, getOrgKey, getProjectKey, getSyllabus, saveSyllabus } from '../utils/localStorage';
+import { getActiveLesson, getAPIKey, getName, getOrgKey, getProjectKey, getSyllabus, saveSyllabus, clearSyllabus } from '../utils/localStorage';
 
 const Layout = () => {
     const [activeView, setActiveView] = useState('settings');
@@ -41,6 +41,12 @@ const Layout = () => {
         setActiveLesson()
     }
 
+    const resetSyllabus = () => {
+        setSyllabus(null)
+        clearSyllabus()
+        setActiveView("syllabusForm")
+    }
+
     const renderView = () => {
         console.log("Active view:" + activeView)
         switch (activeView) {
@@ -61,7 +67,7 @@ const Layout = () => {
                     />
                 );
             case 'syllabus':
-                return <Syllabus syllabus={syllabus} onLessonSelect={setActiveLesson} />;
+                return <Syllabus syllabus={syllabus} onLessonSelect={setActiveLesson} onBackClick={resetSyllabus} />;
             case 'lesson':
                 return <Lesson syllabus={syllabus} lessonDescription={getActiveLesson()} onClose={onLessonClose} />
             default:
