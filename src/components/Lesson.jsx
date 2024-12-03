@@ -134,6 +134,34 @@ _This is a cute character from the game._
         setExpansionLoading(false)
     }
 
+    const nextLessonDescription = (syllabus, currentLesson) => {
+        for (let unit of syllabus.units) {
+            for (let section of unit.sections) {
+                for (let i = 0; i < section.lessons.length; i++) {
+                    if (section.lessons[i] === currentLesson) {
+                        // Check if there is a next lesson in the current section
+                        if (i + 1 < section.lessons.length) {
+                            return section.lessons[i + 1];
+                        }
+                        // If not, check for the next section in the same unit
+                        let nextSectionIndex = unit.sections.indexOf(section) + 1;
+                        if (nextSectionIndex < unit.sections.length) {
+                            return unit.sections[nextSectionIndex].lessons[0];
+                        }
+                        // If not, check for the next unit
+                        let nextUnitIndex = syllabus.units.indexOf(unit) + 1;
+                        if (nextUnitIndex < syllabus.units.length) {
+                            return syllabus.units[nextUnitIndex].sections[0].lessons[0];
+                        }
+                        // If no next lesson is found, return null
+                        return null;
+                    }
+                }
+            }
+        }
+        return null; // If the current lesson isn't found
+    }
+
     // Fetch the lesson when the component mounts
     React.useEffect(() => {
         if (!lessonDescription || fetchedDescriptions.current.has(lessonDescription)) return;
@@ -145,6 +173,12 @@ _This is a cute character from the game._
     const onReturnToSyllabus = () => {
         saveActiveLesson()
         onClose()
+    }
+
+    const nextLesson = nextLessonDescription(syllabus, lessonDescription)
+
+    const onNextLessonClick = () => {
+        loadLesson(nextLesson)
     }
 
     return (
@@ -161,6 +195,7 @@ _This is a cute character from the game._
                     <div className="lesson-content">
                         {loading && <div className="lesson-loading"><Spinner />Creating lesson...</div>}
                         {!loading && lessonContent && <MarkdownRender source={lessonContent} />}
+                        {!loading && lessonContent && nextLesson && <button onClick={onNextLessonClick}>Next: {nextLesson} →</button>}
                     </div>
                 )
             }
