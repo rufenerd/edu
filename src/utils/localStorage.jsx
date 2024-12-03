@@ -43,7 +43,7 @@ export const clearSyllabus = () => {
     localStorage.removeItem("activeLesson")
     localStorage.removeItem("priorKnowledge")
     localStorage.removeItem(USED_IMAGE_URLS_KEY)
-    // localStorage.removeItem("lessonMap")
+    localStorage.removeItem(LESSON_MAP_KEY)
 }
 
 const USED_IMAGE_URLS_KEY = "usedImageUrls";
