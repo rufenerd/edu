@@ -10,6 +10,7 @@ function MarkdownRender({ source }) {
                 children={source}
                 remarkPlugins={[remarkMath]} // Enable math syntax parsing
                 components={{
+                    br: "div",
                     math: ({ value }) => <MathJax inline>{value}</MathJax>,
                     inlineMath: ({ value }) => <MathJax>{value}</MathJax>,
                 }}
