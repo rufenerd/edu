@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { fetchGPTResponse } from '../utils/gpt'; // Ensure this method is implemented in your utils
 import { getPriorKnowledge, saveActiveLesson, saveLesson, getLesson, addUsedImageUrls, getUsedImageUrls } from '../utils/localStorage';
 import Spinner from '../components/Spinner'
@@ -10,6 +10,29 @@ const Lesson = ({ syllabus, lessonDescription, onClose }) => {
     const [lessonContent, setLessonContent] = useState('');
     const [error, setError] = useState('');
     const fetchedDescriptions = useRef(new Set());
+    const [selectedText, setSelectedText] = useState(null);
+    const [expansion, setExpansion] = useState(null);
+    const [expansionLoading, setExpansionLoading] = useState(false);
+
+    useEffect(() => {
+        let timeout;
+
+        const handleSelectionChange = () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                const selection = window.getSelection();
+                setSelectedText(selection.toString());
+            }, 500);
+        };
+
+        document.addEventListener('selectionchange', handleSelectionChange);
+
+        return () => {
+            clearTimeout(timeout);
+            document.removeEventListener('selectionchange', handleSelectionChange);
+        };
+    }, []);
+
 
     const generateImagesPromptClause = (images) => {
         if (images == null || images.length === 0) {
@@ -37,35 +60,20 @@ _This is a cute character from the game._
     }
 
     const fetchLesson = async (lessonDescription) => {
-        const savedContent = getLesson(lessonDescription)
-        if (savedContent != null) {
-            setLessonContent(savedContent);
-            return;
-        }
-
-        if (!lessonDescription) {
-            setError('No lesson provided.');
-            return;
-        }
-
-        try {
-            setLoading(true);
-            setError('');
-
-            const imagePromptResponse = await fetchGPTResponse(`Consider this course syllabus:
+        const imagePromptResponse = await fetchGPTResponse(`Consider this course syllabus:
             ${buildSyllabusString(syllabus)}
             
             What would the top three wikipedia articles to search for to gain understanding on this topic: ${lessonDescription}?
             Respond with a JSON array of strings under a single key called \`articles\`.`, true);
-            const imageSearchQueries = JSON.parse(imagePromptResponse).articles
-            let images = []
-            for (const imageQuery of Object.values(imageSearchQueries)) {
-                images = images.concat(await fetchWikipediaImages(imageQuery))
-            }
-            const usedImageUrls = getUsedImageUrls()
-            const unusedImages = images.filter(image => !usedImageUrls.includes(image.url));
+        const imageSearchQueries = JSON.parse(imagePromptResponse).articles
+        let images = []
+        for (const imageQuery of Object.values(imageSearchQueries)) {
+            images = images.concat(await fetchWikipediaImages(imageQuery))
+        }
+        const usedImageUrls = getUsedImageUrls()
+        const unusedImages = images.filter(image => !usedImageUrls.includes(image.url));
 
-            const prompt = `You are an expert educator known for writing clear and illuminating material.
+        const prompt = `You are an expert educator known for writing clear and illuminating material.
             
             Consider this course syllabus:
             ${buildSyllabusString(syllabus)}
@@ -81,7 +89,26 @@ _This is a cute character from the game._
             ${generateImagesPromptClause(unusedImages)}
     `;
 
-            const response = await fetchGPTResponse(`Teach me: ${prompt}`, false);
+        return fetchGPTResponse(`Teach me: ${prompt}`, false);
+    }
+
+    const loadLesson = async (lessonDescription) => {
+        const savedContent = getLesson(lessonDescription)
+        if (savedContent != null) {
+            setLessonContent(savedContent);
+            return;
+        }
+
+        if (!lessonDescription) {
+            setError('No lesson provided.');
+            return;
+        }
+
+        try {
+            setLoading(true);
+            setError('');
+
+            const response = await fetchLesson(lessonDescription)
             setLessonContent(response);
             saveLesson(lessonDescription, response)
 
@@ -95,12 +122,24 @@ _This is a cute character from the game._
         }
     };
 
+    const onExpand = async () => {
+        setExpansionLoading(true)
+        const expansionResponse = await fetchLesson(selectedText)
+        setExpansion(expansionResponse)
+        setExpansionLoading(false)
+    }
+
+    const onExpansionClose = () => {
+        setExpansion(null)
+        setExpansionLoading(false)
+    }
+
     // Fetch the lesson when the component mounts
     React.useEffect(() => {
         if (!lessonDescription || fetchedDescriptions.current.has(lessonDescription)) return;
         fetchedDescriptions.current.add(lessonDescription);
 
-        fetchLesson(lessonDescription);
+        loadLesson(lessonDescription);
     }, [lessonDescription]);
 
     const onReturnToSyllabus = () => {
@@ -113,14 +152,30 @@ _This is a cute character from the game._
             <div className="back-button" onClick={onReturnToSyllabus}>
                 ⇦
             </div>
+            {selectedText && <div className={`expand-button${selectedText ? ' fade-in' : ''}`} onClick={onExpand}>
+                ⛶
+            </div>}
             {error && <p className="error">{error}</p>}
-            {!error && (
-                <div className="lesson-content">
-                    {loading && <div className="lesson-loading"><Spinner />Creating lesson...</div>}
-                    {!loading && lessonContent && <MarkdownRender source={lessonContent} />}
+            {
+                !error && (
+                    <div className="lesson-content">
+                        {loading && <div className="lesson-loading"><Spinner />Creating lesson...</div>}
+                        {!loading && lessonContent && <MarkdownRender source={lessonContent} />}
+                    </div>
+                )
+            }
+            {(expansionLoading || expansion) && (
+                <div className="expansion-lesson-container">
+                    <div className="close-expand-button-container">
+                        <div className="close-expand-button" onClick={onExpansionClose}>
+                            ✕
+                        </div>
+                    </div>
+                    {expansionLoading && <div className="lesson-loading"><Spinner />Expanding...</div>}
+                    {!expansionLoading && expansion && <div className="expansion-content"><MarkdownRender source={expansion} /></div>}
                 </div>
             )}
-        </div>
+        </div >
     );
 };
 
